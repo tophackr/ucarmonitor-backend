@@ -1,5 +1,3 @@
-import { AppModule } from '@/app.module'
-import { TelegramGuard } from '@/auth/guards/telegram.guard'
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { ExpressAdapter } from '@nestjs/platform-express'
@@ -7,6 +5,8 @@ import cookieParser from 'cookie-parser'
 import express from 'express'
 import morgan from 'morgan'
 import serverless, { Handler } from 'serverless-http'
+import { AppModule } from '../src/app.module'
+import { TelegramGuard } from '../src/auth/guards/telegram.guard'
 
 const app = express()
 

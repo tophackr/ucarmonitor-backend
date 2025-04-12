@@ -1,4 +1,3 @@
-import { CurrentUser } from '@/auth/decorators/user.decorator'
 import {
     Body,
     Controller,
@@ -8,6 +7,7 @@ import {
     Patch,
     Post
 } from '@nestjs/common'
+import { CurrentUser } from '../auth/decorators/user.decorator'
 import { CarService } from './car.service'
 import { CreateCarDto } from './dto/create-car.dto'
 import { UpdateCarDto } from './dto/update-car.dto'

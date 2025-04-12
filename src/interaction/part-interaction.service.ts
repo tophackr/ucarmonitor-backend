@@ -1,6 +1,6 @@
-import { PartService } from '@/part/part.service'
-import { PrismaService } from '@/prisma/prisma.service'
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { PartService } from '../part/part.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { PartInteractionDto } from './dto/part-interaction.dto'
 
 @Injectable()

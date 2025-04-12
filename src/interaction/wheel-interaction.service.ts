@@ -1,8 +1,8 @@
-import { allowedFieldsDto } from '@/common/allow-fields-dto'
-import { validateExists } from '@/common/validate-entity.guard'
-import { PrismaService } from '@/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { WheelInteraction } from '@prisma/client'
+import { allowedFieldsDto } from '../common/allow-fields-dto'
+import { validateExists } from '../common/validate-entity.guard'
+import { PrismaService } from '../prisma/prisma.service'
 import { WheelInteractionDto } from './dto/wheel-interaction.dto'
 
 const ENTITY = 'WheelInteraction'

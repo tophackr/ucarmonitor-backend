@@ -1,7 +1,7 @@
-import { PartModule } from '@/part/part.module'
-import { PrismaService } from '@/prisma/prisma.service'
-import { RepairModule } from '@/repair/repair.module'
 import { forwardRef, Module } from '@nestjs/common'
+import { PartModule } from '../part/part.module'
+import { PrismaService } from '../prisma/prisma.service'
+import { RepairModule } from '../repair/repair.module'
 import { CarController } from './car.controller'
 import { CarService } from './car.service'
 
