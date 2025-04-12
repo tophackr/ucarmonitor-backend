@@ -1,0 +1,51 @@
+model Interaction {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    type        InteractionCategory
+    date        DateTime
+    mileage     Int?
+    amount      Int
+    engineHours Int?                @map("engine_hours")
+    description String?
+
+    car    Car    @relation(fields: [carId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    carId  String @map("car_id")
+    user   User   @relation(fields: [userId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    userId String @map("user_id")
+
+    fuelInteractions   FuelInteraction[]
+    wheelInteractions  WheelInteraction[]
+    repairInteractions RepairOnInteraction[]
+    partInteractions   PartOnInteraction[]
+
+    @@map("interaction")
+}
+
+enum InteractionCategory {
+    mileage
+    parking
+    toll_road
+    taxi
+    sober_driver
+    alarm_system
+    fuel
+    wash
+    maintenance
+    tire_service
+    repair
+    part
+    purchase_wheels
+    tow_truck
+    insurance
+    tax
+    state_inspection
+    fine
+    car_purchase
+    loan_repayment
+    leasing
+    car_purchases
+    tuning
+    driver_salary
+}

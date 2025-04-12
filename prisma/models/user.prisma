@@ -1,0 +1,20 @@
+model User {
+    id        String   @id
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    language Language @default(ru)
+    timezone String   @default("Europe/Moscow")
+
+    cars         Car[]
+    interactions Interaction[]
+    repairs      Repair[]
+    parts        Part[]
+
+    @@map("user")
+}
+
+enum Language {
+    ru
+    en
+}

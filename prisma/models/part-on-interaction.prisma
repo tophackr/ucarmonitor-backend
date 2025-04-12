@@ -1,0 +1,12 @@
+model PartOnInteraction {
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    interaction   Interaction @relation(fields: [interactionId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    interactionId String
+    part          Part        @relation(fields: [partId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    partId        String
+
+    @@id([interactionId, partId])
+    @@map("part_on_interaction")
+}

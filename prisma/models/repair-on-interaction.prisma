@@ -1,0 +1,12 @@
+model RepairOnInteraction {
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    interaction   Interaction @relation(fields: [interactionId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    interactionId String
+    repair        Repair      @relation(fields: [repairId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    repairId      String
+
+    @@id([interactionId, repairId])
+    @@map("repair_on_interaction")
+}

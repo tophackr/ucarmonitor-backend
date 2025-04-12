@@ -1,0 +1,44 @@
+model Repair {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    option    String
+    mileage   Int?
+    days      Int?
+    isDefault Boolean @default(false) @map("is_default")
+    isVisible Boolean @default(true) @map("is_visible")
+
+    car    Car    @relation(fields: [carId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    carId  String @map("car_id")
+    user   User   @relation(fields: [userId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    userId String @map("user_id")
+
+    interactions RepairOnInteraction[]
+
+    @@map("repair")
+}
+
+enum RepairOption {
+    engine_oil
+    transmission_oil
+    oil_filter
+    air_filter
+    cabin_filter
+    front_brake_pads
+    rear_brake_pads
+    brake_fluid
+    front_brake_discs
+    rear_brake_discs
+    air_conditioner_refill
+    spark_plugs
+    coolant
+    alignment
+    timing_belt
+    fuel_filter
+    transfer_case_oil
+    differential_oil
+    car_battery
+    power_steering_fluid
+    clutch
+}

@@ -1,0 +1,27 @@
+model Part {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    option    String
+    isDefault Boolean @default(true) @map("is_default")
+    isVisible Boolean @default(true) @map("is_visible")
+
+    car    Car    @relation(fields: [carId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    carId  String @map("car_id")
+    user   User   @relation(fields: [userId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    userId String @map("user_id")
+
+    interactions PartOnInteraction[]
+
+    @@map("part")
+}
+
+enum PartOption {
+    oil
+    filter
+    brake_pads_and_discs
+    coolant
+    windshield_washer
+    spark_plugs
+}

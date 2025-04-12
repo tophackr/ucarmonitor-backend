@@ -1,0 +1,36 @@
+model WheelInteraction {
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    wheelType WheelType @default(tire) @map("wheel_type")
+    tireType  TireType? @map("tire_type")
+    rimType   RimType?  @map("rim_type")
+
+    brand    String?
+    model    String?
+    width    String?
+    height   String?
+    diameter String?
+
+    interaction   Interaction @relation(fields: [interactionId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    interactionId String      @id @map("interaction_id")
+
+    @@map("wheel_interaction")
+}
+
+enum WheelType {
+    tire
+    rim
+}
+
+enum TireType {
+    summer
+    winter
+    all_season
+}
+
+enum RimType {
+    forged
+    cast
+    stamped
+}

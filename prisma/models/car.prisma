@@ -1,0 +1,41 @@
+model Car {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    isDefault Boolean @default(false) @map("is_default")
+    brand     String
+    model     String?
+    name      String?
+
+    year         Int?
+    fuelType     FuelType @default(gasoline) @map("fuel_type")
+    fuelCapacity Int?     @map("fuel_capacity")
+
+    mileage            Int
+    odometerUnits      OdometerUnits @default(kilometer) @map("odometer_units")
+    engineHoursEnabled Boolean       @default(false) @map("engine_hours_enabled")
+    engineHours        Int?          @map("engine_hours")
+
+    user   User   @relation(fields: [userId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    userId String @map("user_id")
+
+    interactions Interaction[]
+    repairs      Repair[]
+    parts        Part[]
+
+    @@map("car")
+}
+
+enum FuelType {
+    gasoline
+    gas
+    hybrid
+    diesel
+    electric
+}
+
+enum OdometerUnits {
+    kilometer
+    mile
+}
