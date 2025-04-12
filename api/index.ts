@@ -27,6 +27,7 @@ const bootstrap = async () => {
     await nestApp.init()
 }
 
-bootstrap()
-
-export const handler: Handler = serverless(app)
+export const handler: Handler = serverless(async (event, context) => {
+    await bootstrap()
+    return serverless(app)(event, context)
+})
