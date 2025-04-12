@@ -25,7 +25,6 @@ const bootstrap = async () => {
     })
 
     await nestApp.init()
-    console.log('sterted at port: ' + (await nestApp.getUrl()))
 }
 
 export const handler: Handler = serverless(async (event, context) => {
