@@ -31,3 +31,5 @@ export const handler: Handler = serverless(async (event, context) => {
     await bootstrap()
     return serverless(app)(event, context)
 })
+
+export default handler
