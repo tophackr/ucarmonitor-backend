@@ -24,7 +24,8 @@ const bootstrap = async () => {
         exposedHeaders: 'set-cookie'
     })
 
-    await nestApp.init()
+    await nestApp.listen(process.env.PORT ?? 3000)
+    console.log('sterted at port: ' + (await nestApp.getUrl()))
 }
 
 export const handler: Handler = serverless(async (event, context) => {
