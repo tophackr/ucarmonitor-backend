@@ -15,9 +15,14 @@ async function bootstrap() {
     app.use(cookieParser())
     app.use(morgan('tiny'))
     app.enableCors({
-        origin: ['https://localhost:3000', 'https://127.0.0.1:3000'],
-        credentials: true,
-        exposedHeaders: 'set-cookie'
+        origin: [
+            'https://localhost:3000',
+            'https://127.0.0.1:3000',
+            'https://ucarmonitor.vercel.app/',
+            'https://tgl.mini-apps.store/?app_id=16'
+        ],
+        methods: ['GET,PATCH,POST,DELETE'],
+        credentials: true
     })
 
     await app.listen(process.env.PORT ?? 3000)
