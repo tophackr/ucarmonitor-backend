@@ -1,3 +1,4 @@
+import { CurrentUser } from '@/auth/decorators/user.decorator'
 import {
     Body,
     Controller,
@@ -7,7 +8,6 @@ import {
     Patch,
     Post
 } from '@nestjs/common'
-import { CurrentUser } from '../auth/decorators/user.decorator'
 import { CreatePartDto } from './dto/create-part.dto'
 import { UpdatePartDto } from './dto/update-part.dto'
 import { PartService } from './part.service'

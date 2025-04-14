@@ -1,6 +1,6 @@
+import { CarModule } from '@/car/car.module'
+import { PrismaService } from '@/prisma/prisma.service'
 import { forwardRef, Module } from '@nestjs/common'
-import { CarModule } from '../car/car.module'
-import { PrismaService } from '../prisma/prisma.service'
 import { RepairController } from './repair.controller'
 import { RepairService } from './repair.service'
 

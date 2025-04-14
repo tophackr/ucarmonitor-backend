@@ -1,14 +1,14 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { Repair } from '@prisma/client'
-import { CarService } from '../car/car.service'
-import { allowedFieldsDto } from '../common/allow-fields-dto'
+import { CarService } from '@/car/car.service'
+import { allowedFieldsDto } from '@/common/allow-fields-dto'
 import {
     validateExists,
     validateNoIsDefault,
     validateNotDefaultDelete,
     validateNotDefaultUpdate
-} from '../common/validate-entity.guard'
-import { PrismaService } from '../prisma/prisma.service'
+} from '@/common/validate-entity.guard'
+import { PrismaService } from '@/prisma/prisma.service'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { Repair } from '@prisma/client'
 import { defaultRepair } from './constants/default'
 import { CreateRepairDto } from './dto/create-repair.dto'
 import { UpdateRepairDto } from './dto/update-repair.dto'

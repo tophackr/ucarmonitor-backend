@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "build": "prisma generate && prisma migrate deploy && nest build",
+        "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "start": "nest start",
         "start:dev": "nest start --watch",
@@ -14,7 +14,11 @@
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "test:e2e": "jest --config ./test/jest-e2e.json"
+        "test:e2e": "jest --config ./test/jest-e2e.json",
+        "prisma:generate": "prisma generate",
+        "prisma:migrate:dev": "prisma migrate dev",
+        "prisma:migrate:deploy": "prisma migrate deploy",
+        "prisma:migrate:reset": "prisma migrate reset"
     },
     "dependencies": {
         "@nestjs/common": "^10.0.0",
@@ -35,8 +39,7 @@
         "passport-custom": "^1.1.1",
         "prisma": "^6.6.0",
         "reflect-metadata": "^0.1.13",
-        "rxjs": "^7.8.1",
-        "serverless-http": "^3.2.0"
+        "rxjs": "^7.8.1"
     },
     "devDependencies": {
         "@nestjs/cli": "^10.0.0",

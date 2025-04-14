@@ -1,8 +1,8 @@
+import { allowedFieldsDto } from '@/common/allow-fields-dto'
+import { validateExists } from '@/common/validate-entity.guard'
+import { PrismaService } from '@/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { FuelInteraction } from '@prisma/client'
-import { allowedFieldsDto } from '../common/allow-fields-dto'
-import { validateExists } from '../common/validate-entity.guard'
-import { PrismaService } from '../prisma/prisma.service'
 import { FuelInteractionDto } from './dto/fuel-interaction.dto'
 import { UpdateFuelInteractionDto } from './dto/update-fuel-interaction.dto'
 

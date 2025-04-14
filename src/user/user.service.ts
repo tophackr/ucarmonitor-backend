@@ -1,8 +1,8 @@
+import { allowedFieldsDto } from '@/common/allow-fields-dto'
+import { validateExists } from '@/common/validate-entity.guard'
+import { PrismaService } from '@/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { User } from '@prisma/client'
-import { allowedFieldsDto } from '../common/allow-fields-dto'
-import { validateExists } from '../common/validate-entity.guard'
-import { PrismaService } from '../prisma/prisma.service'
 import { UserDto } from './dto/user.dto'
 
 const ENTITY = 'User'
