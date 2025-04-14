@@ -35,7 +35,9 @@ export class TelegramStrategy extends PassportStrategy(Strategy, 'telegram') {
         }
 
         // todo: remove after end dev mode
-        if (initData.includes('start_param=debug')) {
+        const isDev = process.env.NODE_ENV === 'development'
+
+        if (isDev && initData.includes('start_param=debug')) {
             return {
                 authDate: new Date().toISOString(),
                 queryId: crypto.randomUUID(),
