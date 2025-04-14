@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { InitData, parse, validate } from '@telegram-apps/init-data-node'
+import { Request } from 'express'
 import { Strategy } from 'passport-custom'
 
 type InitDataResponse = Pick<InitData, 'auth_date' | 'query_id' | 'user'>
@@ -28,7 +29,7 @@ export class TelegramStrategy extends PassportStrategy(Strategy, 'telegram') {
     }
 
     async validate(request: Request): Promise<InitDataResponse> {
-        const initData = request.headers.get('x-telegram-data') as string
+        const initData = request.headers['x-telegram-data'] as string
 
         if (!initData) {
             throw new UnauthorizedException('Missing Telegram WebApp data')
