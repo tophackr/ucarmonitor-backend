@@ -1,4 +1,4 @@
-import { RimType, TireType, WheelType } from '@prisma/client'
+import { RimType, TireType, WheelInteraction, WheelType } from '@prisma/client'
 import {
     registerDecorator,
     ValidationArguments,
@@ -6,15 +6,15 @@ import {
 } from 'class-validator'
 
 export function IsWheelTypeValid(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
+    return function (object: unknown, propertyName: string) {
         registerDecorator({
             name: 'IsWheelTypeValid',
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,
             validator: {
-                validate(_: any, args: ValidationArguments) {
-                    const obj = args.object as any
+                validate(_: unknown, args: ValidationArguments) {
+                    const obj = args.object as WheelInteraction
                     if (obj.wheelType === WheelType.tire) {
                         return (
                             obj.tireType !== undefined &&
@@ -31,7 +31,7 @@ export function IsWheelTypeValid(validationOptions?: ValidationOptions) {
                 },
 
                 defaultMessage(args: ValidationArguments) {
-                    const { wheelType } = args.object as any
+                    const { wheelType } = args.object as WheelInteraction
                     if (wheelType === WheelType.tire) {
                         return "tireType is required when wheelType is 'tire'"
                     }

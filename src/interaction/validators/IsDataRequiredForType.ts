@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { InteractionCategory } from '@prisma/client'
 import {
     registerDecorator,
@@ -6,14 +7,14 @@ import {
 } from 'class-validator'
 
 export function IsDataRequiredForType(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
+    return function (object: unknown, propertyName: string) {
         registerDecorator({
             name: 'isDataRequiredForType',
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,
             validator: {
-                validate(value: any, args: ValidationArguments) {
+                validate(value: unknown, args: ValidationArguments) {
                     const obj = args.object as any
                     if (
                         [
@@ -28,7 +29,8 @@ export function IsDataRequiredForType(validationOptions?: ValidationOptions) {
                     return true
                 },
                 defaultMessage(args: ValidationArguments) {
-                    return `data must be an object for type ${args.object['type']}`
+                    const obj = args.object as { type: InteractionCategory }
+                    return `data must be an object for type ${obj.type}`
                 }
             }
         })

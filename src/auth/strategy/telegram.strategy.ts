@@ -8,17 +8,17 @@ type InitDataResponse = Pick<InitData, 'auth_date' | 'query_id' | 'user'>
 
 @Injectable()
 export class TelegramStrategy extends PassportStrategy(Strategy, 'telegram') {
-    constructor(private configService: ConfigService) {
+    constructor(private readonly configService: ConfigService) {
         super()
     }
 
-    validateInitData(initData: string): InitDataResponse | null {
+    private validateInitData(initData: string): InitDataResponse | null {
         try {
             validate(initData, this.configService.get('TELEGRAM_TOKEN'), {
                 expiresIn: 3600
             })
         } catch (e) {
-            console.log(e)
+            console.error(e)
             return null
         }
 
@@ -27,8 +27,8 @@ export class TelegramStrategy extends PassportStrategy(Strategy, 'telegram') {
         return { auth_date, query_id, user }
     }
 
-    async validate(req: Request): Promise<any> {
-        const initData = req.headers['x-telegram-data'] as string
+    async validate(request: Request): Promise<InitDataResponse> {
+        const initData = request.headers.get('x-telegram-data') as string
 
         if (!initData) {
             throw new UnauthorizedException('Missing Telegram WebApp data')
@@ -39,11 +39,12 @@ export class TelegramStrategy extends PassportStrategy(Strategy, 'telegram') {
 
         if (isDev && initData.includes('start_param=debug')) {
             return {
-                authDate: new Date().toISOString(),
-                queryId: crypto.randomUUID(),
+                auth_date: new Date(),
+                query_id: crypto.randomUUID(),
                 user: {
                     id: 123,
-                    username: 'example'
+                    username: 'example',
+                    first_name: 'example'
                 }
             }
         }
