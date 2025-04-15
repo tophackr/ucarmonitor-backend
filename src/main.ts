@@ -1,6 +1,5 @@
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 import process from 'node:process'
 import { AppModule } from './app.module'
@@ -9,19 +8,24 @@ import { TelegramGuard } from './auth/guards/telegram.guard'
 async function bootstrap() {
     const app = await NestFactory.create(AppModule)
 
+    const isDev = process.env.NODE_ENV === 'development'
+
     app.setGlobalPrefix('api')
     app.useGlobalGuards(new TelegramGuard())
     app.useGlobalPipes(new ValidationPipe())
-    app.use(cookieParser())
-    app.use(morgan('tiny'))
+    app.use(
+        morgan(isDev ? 'tiny' : 'combined', {
+            skip: (_, res) => !isDev && res.statusCode < 400
+        })
+    )
     app.enableCors({
         origin: [
-            'https://localhost:3000',
-            'https://127.0.0.1:3000',
-            'https://ucarmonitor.vercel.app/',
-            'https://tgl.mini-apps.store/?app_id=16'
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            'https://ucarmonitor.vercel.app/'
         ],
-        methods: ['GET,PATCH,POST,DELETE'],
+        methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'X-Telegram-Data'],
         credentials: true
     })
 
