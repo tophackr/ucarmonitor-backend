@@ -36,7 +36,7 @@ export class TelegramStrategy extends PassportStrategy(Strategy, 'telegram') {
         }
 
         // todo: remove after end dev mode
-        const isDev = process.env.NODE_ENV === 'development'
+        const isDev = this.configService.get('NODE_ENV') === 'development'
 
         if (isDev && initData.includes('start_param=debug')) {
             return {
