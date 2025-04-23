@@ -1,9 +1,8 @@
 import { allowedFieldsDto } from '@/common/allow-fields-dto'
-import { validateExists } from '@/common/validate-entity.guard'
 import { PrismaService } from '@/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { User } from '@prisma/client'
-import { UserDto } from './dto/user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
 
 const ENTITY = 'User'
 
@@ -11,16 +10,20 @@ const ENTITY = 'User'
 export class UserService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    createOrUpdate(id: string, createOrUpdateDto: UserDto): Promise<User> {
-        const allowedFields = allowedFieldsDto(createOrUpdateDto, ENTITY)
+    private create(id: string): Promise<User> {
+        return this.prismaService.user.create({
+            data: { id }
+        })
+    }
 
-        return this.prismaService.user.upsert({
-            where: { id: id },
-            update: allowedFields,
-            create: {
-                ...allowedFields,
-                id
-            }
+    async update(id: string, updateDto: UpdateUserDto): Promise<User> {
+        await this.findOne(id)
+
+        const allowedFields = allowedFieldsDto(updateDto, ENTITY)
+
+        return this.prismaService.user.update({
+            where: { id },
+            data: allowedFields
         })
     }
 
@@ -29,6 +32,10 @@ export class UserService {
             where: { id }
         })
 
-        return validateExists(item, ENTITY, id)
+        if (!item) {
+            return this.create(id)
+        }
+
+        return item
     }
 }
