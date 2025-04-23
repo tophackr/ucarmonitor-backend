@@ -10,13 +10,20 @@ async function bootstrap() {
 
     const isDev = process.env.NODE_ENV === 'development'
 
+    morgan.token('time', () => new Date().toTimeString().split(' ')[0])
+
     app.setGlobalPrefix('api')
     app.useGlobalGuards(new TelegramGuard())
-    app.useGlobalPipes(new ValidationPipe())
+    app.useGlobalPipes(new ValidationPipe({ transform: true }))
     app.use(
-        morgan(isDev ? 'tiny' : 'combined', {
-            skip: (_, res) => !isDev && res.statusCode < 400
-        })
+        morgan(
+            isDev
+                ? '[:time] :method :url :status :res[content-length] - :response-time ms'
+                : 'combined',
+            {
+                skip: (_, res) => !isDev && res.statusCode < 400
+            }
+        )
     )
     app.enableCors({
         origin: [
