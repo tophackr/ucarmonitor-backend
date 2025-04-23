@@ -8,12 +8,17 @@ import {
 } from '@/common/validate-entity.guard'
 import { PrismaService } from '@/prisma/prisma.service'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { Repair } from '@prisma/client'
+import { Interaction, Repair } from '@prisma/client'
 import { defaultRepair } from './constants/default'
 import { CreateRepairDto } from './dto/create-repair.dto'
+import { UpdateManyRepairDto } from './dto/update-many-repair.dto'
 import { UpdateRepairDto } from './dto/update-repair.dto'
 
 const ENTITY = 'Repair'
+
+export interface RepairWithInteraction extends Repair {
+    interaction: Interaction
+}
 
 @Injectable()
 export class RepairService {
@@ -45,11 +50,39 @@ export class RepairService {
         })
     }
 
-    async findAll(userId: string, carId: string): Promise<Repair[]> {
+    async findAll(
+        userId: string,
+        carId: string
+    ): Promise<RepairWithInteraction[]> {
         await this.carService.findOne(userId, carId)
 
-        return this.prismaService.repair.findMany({
-            where: { userId, carId }
+        const items = await this.prismaService.repair.findMany({
+            where: { userId, carId },
+            include: {
+                interactions: {
+                    include: {
+                        interaction: true
+                    },
+                    orderBy: {
+                        interaction: {
+                            date: 'desc'
+                        }
+                    },
+                    take: 1
+                }
+            }
+        })
+
+        return items.map(item => {
+            const { interactions, ...args } = item
+            const interaction = interactions[0]?.interaction
+
+            const data = {
+                ...args,
+                interaction: interaction ?? null
+            }
+
+            return data
         })
     }
 
@@ -81,6 +114,39 @@ export class RepairService {
             where: { userId, carId, id },
             data: allowedFieldsDto(updateRepairDto, ENTITY)
         })
+    }
+
+    async updateMany(
+        userId: string,
+        carId: string,
+        updateManyRepairDto: UpdateManyRepairDto
+    ): Promise<Repair[]> {
+        await this.carService.findOne(userId, carId)
+
+        const updated = await Promise.all(
+            updateManyRepairDto.repairs
+                .map(async repair => {
+                    const { id, ...data } = repair
+
+                    validateNoIsDefault(data)
+
+                    const item = await this.prismaService.repair.findFirst({
+                        where: { userId, carId, id }
+                    })
+
+                    validateNotDefaultUpdate(data, item, ENTITY)
+
+                    if (item) {
+                        return this.prismaService.repair.update({
+                            where: { id },
+                            data
+                        })
+                    }
+                })
+                .filter(Boolean)
+        )
+
+        return updated
     }
 
     async remove(userId: string, carId: string, id: string): Promise<Repair> {

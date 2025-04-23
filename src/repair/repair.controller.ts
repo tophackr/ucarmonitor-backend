@@ -9,6 +9,7 @@ import {
     Post
 } from '@nestjs/common'
 import { CreateRepairDto } from './dto/create-repair.dto'
+import { UpdateManyRepairDto } from './dto/update-many-repair.dto'
 import { UpdateRepairDto } from './dto/update-repair.dto'
 import { RepairService } from './repair.service'
 
@@ -47,6 +48,15 @@ export class RepairController {
         @Body() updateRepairDto: UpdateRepairDto
     ) {
         return this.repairService.update(userId, carId, id, updateRepairDto)
+    }
+
+    @Patch()
+    updateMany(
+        @CurrentUser('id') userId: string,
+        @Param('carId') carId: string,
+        @Body() updateManyRepairDto: UpdateManyRepairDto
+    ) {
+        return this.repairService.updateMany(userId, carId, updateManyRepairDto)
     }
 
     @Delete(':id')
