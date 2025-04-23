@@ -27,6 +27,13 @@ type IInteraction = Interaction & {
     data: ISlicedInteraction
 }
 
+function isMaintenanceOrRepair(type: InteractionCategory): boolean {
+    return (
+        type === InteractionCategory.maintenance ||
+        type === InteractionCategory.repair
+    )
+}
+
 @Injectable()
 export class InteractionService {
     constructor(
@@ -37,6 +44,84 @@ export class InteractionService {
         private readonly partInteractionService: PartInteractionService,
         private readonly wheelInteractionService: WheelInteractionService
     ) {}
+
+    private createItemData(
+        userId: string,
+        carId: string,
+        createInteractionDto: CreateInteractionDto,
+        item: Interaction
+    ): Promise<ISlicedInteraction> {
+        if (item.type === InteractionCategory.fuel) {
+            return this.fuelInteractionService.create(
+                item.id,
+                createInteractionDto.data as FuelInteractionDto
+            )
+        } else if (isMaintenanceOrRepair(item.type)) {
+            return this.repairInteractionService.createOrUpdate(
+                userId,
+                carId,
+                item.id,
+                createInteractionDto.data as RepairInteractionDto
+            )
+        } else if (item.type === InteractionCategory.part) {
+            return this.partInteractionService.createOrUpdate(
+                userId,
+                carId,
+                item.id,
+                createInteractionDto.data as PartInteractionDto
+            )
+        } else if (item.type === InteractionCategory.purchase_wheels) {
+            return this.wheelInteractionService.create(
+                item.id,
+                createInteractionDto.data as WheelInteractionDto
+            )
+        }
+    }
+
+    private findItemData(item: Interaction): Promise<ISlicedInteraction> {
+        if (item.type === InteractionCategory.fuel) {
+            return this.fuelInteractionService.findOne(item.id)
+        } else if (isMaintenanceOrRepair(item.type)) {
+            return this.repairInteractionService.findAll(item.id)
+        } else if (item.type === InteractionCategory.part) {
+            return this.partInteractionService.findAll(item.id)
+        } else if (item.type === InteractionCategory.purchase_wheels) {
+            return this.wheelInteractionService.findOne(item.id)
+        }
+    }
+
+    private updateItemData(
+        userId: string,
+        carId: string,
+        updateInteractionDto: UpdateInteractionDto,
+        item: Interaction
+    ): Promise<ISlicedInteraction> {
+        if (item.type === InteractionCategory.fuel) {
+            return this.fuelInteractionService.update(
+                item.id,
+                updateInteractionDto.data as FuelInteractionDto
+            )
+        } else if (isMaintenanceOrRepair(item.type)) {
+            return this.repairInteractionService.createOrUpdate(
+                userId,
+                carId,
+                item.id,
+                updateInteractionDto.data as RepairInteractionDto
+            )
+        } else if (item.type === InteractionCategory.part) {
+            return this.partInteractionService.createOrUpdate(
+                userId,
+                carId,
+                item.id,
+                updateInteractionDto.data as PartInteractionDto
+            )
+        } else if (item.type === InteractionCategory.purchase_wheels) {
+            return this.wheelInteractionService.update(
+                item.id,
+                updateInteractionDto.data as WheelInteractionDto
+            )
+        }
+    }
 
     async create(
         userId: string,
@@ -51,35 +136,12 @@ export class InteractionService {
             data: { ...allowedFields, userId, carId }
         })
 
-        let data: ISlicedInteraction
-
-        if (createInteractionDto.type === InteractionCategory.fuel) {
-            data = await this.fuelInteractionService.create(
-                item.id,
-                createInteractionDto.data as FuelInteractionDto
-            )
-        } else if (createInteractionDto.type === InteractionCategory.repair) {
-            data = await this.repairInteractionService.createOrUpdate(
-                userId,
-                carId,
-                item.id,
-                createInteractionDto.data as RepairInteractionDto
-            )
-        } else if (createInteractionDto.type === InteractionCategory.part) {
-            data = await this.partInteractionService.createOrUpdate(
-                userId,
-                carId,
-                item.id,
-                createInteractionDto.data as PartInteractionDto
-            )
-        } else if (
-            createInteractionDto.type === InteractionCategory.purchase_wheels
-        ) {
-            data = await this.wheelInteractionService.create(
-                item.id,
-                createInteractionDto.data as WheelInteractionDto
-            )
-        }
+        const data = await this.createItemData(
+            userId,
+            carId,
+            createInteractionDto,
+            item
+        )
 
         return { ...item, data }
     }
@@ -88,7 +150,10 @@ export class InteractionService {
         await this.carService.findOne(userId, carId)
 
         return this.prismaService.interaction.findMany({
-            where: { userId, carId }
+            where: { userId, carId },
+            orderBy: {
+                date: 'desc'
+            }
         })
     }
 
@@ -105,17 +170,7 @@ export class InteractionService {
 
         const validatedItem = validateExists(item, ENTITY, id)
 
-        let data: ISlicedInteraction
-
-        if (validatedItem.type === InteractionCategory.fuel) {
-            data = await this.fuelInteractionService.findOne(item.id)
-        } else if (validatedItem.type === InteractionCategory.repair) {
-            data = await this.repairInteractionService.findAll(item.id)
-        } else if (validatedItem.type === InteractionCategory.part) {
-            data = await this.partInteractionService.findAll(item.id)
-        } else if (validatedItem.type === InteractionCategory.purchase_wheels) {
-            data = await this.wheelInteractionService.findOne(item.id)
-        }
+        const data = await this.findItemData(validatedItem)
 
         return { ...validatedItem, data }
     }
@@ -141,33 +196,12 @@ export class InteractionService {
             data: allowedFieldsDto(updateInteractionDto, ENTITY)
         })
 
-        let data: ISlicedInteraction
-
-        if (updatedItem.type === InteractionCategory.fuel) {
-            data = await this.fuelInteractionService.update(
-                updatedItem.id,
-                updateInteractionDto.data as FuelInteractionDto
-            )
-        } else if (updatedItem.type === InteractionCategory.repair) {
-            data = await this.repairInteractionService.createOrUpdate(
-                userId,
-                carId,
-                item.id,
-                updateInteractionDto.data as RepairInteractionDto
-            )
-        } else if (updatedItem.type === InteractionCategory.part) {
-            data = await this.partInteractionService.createOrUpdate(
-                userId,
-                carId,
-                item.id,
-                updateInteractionDto.data as PartInteractionDto
-            )
-        } else if (updatedItem.type === InteractionCategory.purchase_wheels) {
-            data = await this.wheelInteractionService.update(
-                updatedItem.id,
-                updateInteractionDto.data as WheelInteractionDto
-            )
-        }
+        const data = await this.updateItemData(
+            userId,
+            carId,
+            updateInteractionDto,
+            updatedItem
+        )
 
         return { ...updatedItem, data }
     }
