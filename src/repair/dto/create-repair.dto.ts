@@ -1,14 +1,14 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator'
 
 export class CreateRepairDto {
     @IsString()
     readonly option: string
 
-    @IsNumber()
+    @IsInt()
     @IsOptional()
     readonly mileage?: number
 
-    @IsNumber()
+    @IsInt()
     @IsOptional()
     readonly days?: number
 

@@ -4,9 +4,9 @@ model Interaction {
     updatedAt DateTime @updatedAt @map("updated_at")
 
     type        InteractionCategory
-    date        DateTime
+    date        DateTime            @db.Date
     mileage     Int?
-    amount      Int
+    amount      Float?
     engineHours Int?                @map("engine_hours")
     description String?
 

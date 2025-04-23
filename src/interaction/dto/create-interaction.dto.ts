@@ -3,6 +3,7 @@ import { Transform, Type } from 'class-transformer'
 import {
     IsDateString,
     IsEnum,
+    IsInt,
     IsNumber,
     IsOptional,
     IsString,
@@ -22,14 +23,15 @@ export class CreateInteractionDto {
     @IsDateString()
     readonly date: Date
 
-    @IsNumber()
+    @IsInt()
     @IsOptional()
     readonly mileage?: number
 
-    @IsNumber()
-    readonly amount: number
+    @IsNumber({ maxDecimalPlaces: 2 })
+    @IsOptional()
+    readonly amount?: number
 
-    @IsNumber()
+    @IsInt()
     @IsOptional()
     readonly engineHours?: number
 

@@ -15,15 +15,16 @@ export function IsWheelTypeValid(validationOptions?: ValidationOptions) {
             validator: {
                 validate(_: unknown, args: ValidationArguments) {
                     const obj = args.object as WheelInteraction
+                    console.log(args)
                     if (obj.wheelType === WheelType.tire) {
                         return (
-                            obj.tireType !== undefined &&
+                            [null, undefined].includes(obj.tireType) ||
                             Object.values(TireType).includes(obj.tireType)
                         )
                     }
                     if (obj.wheelType === WheelType.rim) {
                         return (
-                            obj.rimType !== undefined &&
+                            [null, undefined].includes(obj.rimType) ||
                             Object.values(RimType).includes(obj.rimType)
                         )
                     }
@@ -32,6 +33,7 @@ export function IsWheelTypeValid(validationOptions?: ValidationOptions) {
 
                 defaultMessage(args: ValidationArguments) {
                     const { wheelType } = args.object as WheelInteraction
+                    console.log('defaultMessage', args)
                     if (wheelType === WheelType.tire) {
                         return "tireType is required when wheelType is 'tire'"
                     }

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "interaction" ALTER COLUMN "amount" SET DATA TYPE DOUBLE PRECISION;

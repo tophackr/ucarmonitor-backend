@@ -7,19 +7,19 @@ export class FuelInteractionDto {
     @Transform(({ value }) => ('' + value).toLowerCase())
     readonly fuelGrade: FuelGrade
 
-    @IsNumber()
+    @IsNumber({ maxDecimalPlaces: 2 })
     @IsOptional()
     readonly capacity?: number
 
-    @IsNumber()
+    @IsNumber({ maxDecimalPlaces: 2 })
     @IsOptional()
     readonly price?: number
 
-    @IsNumber()
+    @IsNumber({ maxDecimalPlaces: 2 })
     @IsOptional()
     readonly beforeRefueling?: number
 
-    @IsNumber()
+    @IsNumber({ maxDecimalPlaces: 2 })
     @IsOptional()
     readonly afterRefueling?: number
 

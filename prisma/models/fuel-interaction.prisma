@@ -3,10 +3,10 @@ model FuelInteraction {
     updatedAt DateTime @updatedAt @map("updated_at")
 
     fuelGrade       FuelGrade @default(ai92) @map("fuel_grade")
-    capacity        Int?
-    price           Int?
-    beforeRefueling Int?      @map("before_refueling")
-    afterRefueling  Int?      @map("after_refueling")
+    capacity        Float?
+    price           Float?
+    beforeRefueling Float?    @map("before_refueling")
+    afterRefueling  Float?    @map("after_refueling")
     capacityFull    Boolean?  @map("capacity_full")
 
     interaction   Interaction @relation(fields: [interactionId], references: [id], onUpdate: NoAction, onDelete: Cascade)

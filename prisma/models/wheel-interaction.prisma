@@ -8,9 +8,9 @@ model WheelInteraction {
 
     brand    String?
     model    String?
-    width    String?
-    height   String?
-    diameter String?
+    width    Float?
+    height   Int?
+    diameter Int?
 
     interaction   Interaction @relation(fields: [interactionId], references: [id], onUpdate: NoAction, onDelete: Cascade)
     interactionId String      @id @map("interaction_id")

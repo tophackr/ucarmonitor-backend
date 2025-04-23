@@ -1,12 +1,6 @@
 import { FuelType, OdometerUnits } from '@prisma/client'
 import { Transform } from 'class-transformer'
-import {
-    IsBoolean,
-    IsEnum,
-    IsNumber,
-    IsOptional,
-    IsString
-} from 'class-validator'
+import { IsBoolean, IsEnum, IsInt, IsOptional, IsString } from 'class-validator'
 
 export class CreateCarDto {
     @IsBoolean()
@@ -24,7 +18,7 @@ export class CreateCarDto {
     @IsOptional()
     readonly name?: string
 
-    @IsNumber()
+    @IsInt()
     @IsOptional()
     readonly year?: number
 
@@ -32,11 +26,11 @@ export class CreateCarDto {
     @Transform(({ value }) => ('' + value).toLowerCase())
     readonly fuelType: FuelType
 
-    @IsNumber()
+    @IsInt()
     @IsOptional()
     readonly fuelCapacity?: number
 
-    @IsNumber()
+    @IsInt()
     readonly mileage: number
 
     @IsEnum(OdometerUnits)
@@ -47,7 +41,7 @@ export class CreateCarDto {
     @IsOptional()
     readonly engineHoursEnabled: boolean
 
-    @IsNumber()
+    @IsInt()
     @IsOptional()
     readonly engineHours?: number
 }

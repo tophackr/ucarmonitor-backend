@@ -1,6 +1,6 @@
 import { RimType, TireType, WheelType } from '@prisma/client'
 import { Transform } from 'class-transformer'
-import { IsEnum, IsOptional, IsString } from 'class-validator'
+import { IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator'
 import { IsWheelTypeValid } from '../validators/WheelConditionalValidator'
 
 export class WheelInteractionDto {
@@ -10,12 +10,10 @@ export class WheelInteractionDto {
 
     @IsEnum(TireType)
     @IsOptional()
-    @Transform(({ value }) => ('' + value).toLowerCase())
     readonly tireType?: TireType
 
     @IsEnum(RimType)
     @IsOptional()
-    @Transform(({ value }) => ('' + value).toLowerCase())
     readonly rimType?: RimType
 
     @IsString()
@@ -26,19 +24,19 @@ export class WheelInteractionDto {
     @IsOptional()
     readonly model?: string
 
-    @IsString()
+    @IsNumber({ maxDecimalPlaces: 1 })
     @IsOptional()
-    readonly width?: string
+    readonly width?: number
 
-    @IsString()
+    @IsInt()
     @IsOptional()
-    readonly height?: string
+    readonly height?: number
 
-    @IsString()
+    @IsInt()
     @IsOptional()
-    readonly diameter?: string
+    readonly diameter?: number
 
     @IsWheelTypeValid()
     // @ts-expect-error TS6133: injected by framework
-    private readonly _validateWheelType?: any
+    private readonly _validateWheelType?: unknown
 }
