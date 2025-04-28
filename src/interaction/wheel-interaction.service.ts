@@ -2,38 +2,14 @@ import { allowedFieldsDto } from '@/common/allow-fields-dto'
 import { validateExists } from '@/common/validate-entity.guard'
 import { PrismaService } from '@/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { WheelInteraction } from '@prisma/client'
 import { WheelInteractionDto } from './dto/wheel-interaction.dto'
+import { transformWheelData } from './utils/transformWheelData'
 
 const ENTITY = 'WheelInteraction'
 
 @Injectable()
 export class WheelInteractionService {
     constructor(private readonly prismaService: PrismaService) {}
-
-    private removeUnusedProps(item: WheelInteraction): WheelInteractionDto {
-        const {
-            wheelType,
-            tireType,
-            rimType,
-            brand,
-            model,
-            width,
-            height,
-            diameter
-        } = item
-
-        return {
-            wheelType,
-            tireType,
-            rimType,
-            brand,
-            model,
-            width,
-            height,
-            diameter
-        }
-    }
 
     async create(
         interactionId: string,
@@ -48,7 +24,7 @@ export class WheelInteractionService {
             data: { ...allowedFields, interactionId }
         })
 
-        return this.removeUnusedProps(item)
+        return transformWheelData(item)
     }
 
     async findOne(id: string): Promise<WheelInteractionDto> {
@@ -58,7 +34,7 @@ export class WheelInteractionService {
 
         const validatedItem = validateExists(item, ENTITY, id)
 
-        return this.removeUnusedProps(validatedItem)
+        return transformWheelData(validatedItem)
     }
 
     async update(
@@ -72,6 +48,6 @@ export class WheelInteractionService {
             data: allowedFieldsDto(updateWheelInteractionDto, ENTITY)
         })
 
-        return this.removeUnusedProps(item)
+        return transformWheelData(item)
     }
 }

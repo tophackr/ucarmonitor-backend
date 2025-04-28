@@ -15,6 +15,12 @@ import { PartInteractionDto } from './part-interaction.dto'
 import { RepairInteractionDto } from './repair-interaction.dto'
 import { WheelInteractionDto } from './wheel-interaction.dto'
 
+export type ISlicedInteraction =
+    | FuelInteractionDto
+    | RepairInteractionDto
+    | PartInteractionDto
+    | WheelInteractionDto
+
 export class CreateInteractionDto {
     @IsEnum(InteractionCategory)
     @Transform(({ value }) => ('' + value).toLowerCase())
@@ -56,9 +62,5 @@ export class CreateInteractionDto {
                 return Object
         }
     })
-    readonly data:
-        | FuelInteractionDto
-        | RepairInteractionDto
-        | PartInteractionDto
-        | WheelInteractionDto
+    readonly data: ISlicedInteraction
 }

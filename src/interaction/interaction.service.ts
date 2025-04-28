@@ -1,11 +1,13 @@
 import { CarService } from '@/car/car.service'
 import { allowedFieldsDto } from '@/common/allow-fields-dto'
 import { validateExists } from '@/common/validate-entity.guard'
-import { CreatePartDto } from '@/part/dto/create-part.dto'
 import { PrismaService } from '@/prisma/prisma.service'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { Interaction, InteractionCategory } from '@prisma/client'
-import { CreateInteractionDto } from './dto/create-interaction.dto'
+import {
+    CreateInteractionDto,
+    ISlicedInteraction
+} from './dto/create-interaction.dto'
 import { FuelInteractionDto } from './dto/fuel-interaction.dto'
 import { PartInteractionDto } from './dto/part-interaction.dto'
 import { RepairInteractionDto } from './dto/repair-interaction.dto'
@@ -14,15 +16,14 @@ import { WheelInteractionDto } from './dto/wheel-interaction.dto'
 import { FuelInteractionService } from './fuel-interaction.service'
 import { PartInteractionService } from './part-interaction.service'
 import { RepairInteractionService } from './repair-interaction.service'
+import { transformFuelData } from './utils/transformFuelData'
+import { transformPartData } from './utils/transformPartData'
+import { transformRepairData } from './utils/transformRepairData'
+import { transformWheelData } from './utils/transformWheelData'
 import { WheelInteractionService } from './wheel-interaction.service'
 
 const ENTITY = 'Interaction'
 
-type ISlicedInteraction =
-    | FuelInteractionDto
-    | RepairInteractionDto
-    | CreatePartDto
-    | WheelInteractionDto
 type IInteraction = Interaction & {
     data: ISlicedInteraction
 }
@@ -149,11 +150,41 @@ export class InteractionService {
     async findAll(userId: string, carId: string): Promise<Interaction[]> {
         await this.carService.findOne(userId, carId)
 
-        return this.prismaService.interaction.findMany({
+        const items = await this.prismaService.interaction.findMany({
             where: { userId, carId },
+            include: {
+                fuelInteraction: true,
+                repairInteractions: true,
+                partInteractions: true,
+                wheelInteraction: true
+            },
             orderBy: {
                 date: 'desc'
             }
+        })
+
+        return items.map(item => {
+            const {
+                fuelInteraction,
+                repairInteractions,
+                partInteractions,
+                wheelInteraction,
+                ...args
+            } = item
+
+            let data: ISlicedInteraction
+
+            if (fuelInteraction) {
+                data = transformFuelData(fuelInteraction)
+            } else if (repairInteractions.length) {
+                data = transformRepairData(repairInteractions)
+            } else if (partInteractions.length) {
+                data = transformPartData(partInteractions)
+            } else if (wheelInteraction) {
+                data = transformWheelData(wheelInteraction)
+            }
+
+            return { ...args, data }
         })
     }
 

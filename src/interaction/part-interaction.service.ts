@@ -2,6 +2,7 @@ import { PartService } from '@/part/part.service'
 import { PrismaService } from '@/prisma/prisma.service'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { PartInteractionDto } from './dto/part-interaction.dto'
+import { transformPartData } from './utils/transformPartData'
 
 @Injectable()
 export class PartInteractionService {
@@ -59,7 +60,7 @@ export class PartInteractionService {
             where: { interactionId: id }
         })
 
-        return { ids: items.map(item => item.partId) }
+        return transformPartData(items)
     }
 
     private async remove(id: string, ids: string[]): Promise<void> {

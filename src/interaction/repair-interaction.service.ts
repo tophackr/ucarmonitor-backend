@@ -2,6 +2,7 @@ import { PrismaService } from '@/prisma/prisma.service'
 import { RepairService } from '@/repair/repair.service'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { RepairInteractionDto } from './dto/repair-interaction.dto'
+import { transformRepairData } from './utils/transformRepairData'
 
 @Injectable()
 export class RepairInteractionService {
@@ -59,7 +60,7 @@ export class RepairInteractionService {
             where: { interactionId: id }
         })
 
-        return { ids: items.map(item => item.repairId) }
+        return transformRepairData(items)
     }
 
     private async remove(id: string, ids: string[]): Promise<void> {

@@ -2,35 +2,15 @@ import { allowedFieldsDto } from '@/common/allow-fields-dto'
 import { validateExists } from '@/common/validate-entity.guard'
 import { PrismaService } from '@/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { FuelInteraction } from '@prisma/client'
 import { FuelInteractionDto } from './dto/fuel-interaction.dto'
 import { UpdateFuelInteractionDto } from './dto/update-fuel-interaction.dto'
+import { transformFuelData } from './utils/transformFuelData'
 
 const ENTITY = 'FuelInteraction'
 
 @Injectable()
 export class FuelInteractionService {
     constructor(private readonly prismaService: PrismaService) {}
-
-    private removeUnusedProps(item: FuelInteraction): FuelInteractionDto {
-        const {
-            fuelGrade,
-            capacity,
-            price,
-            beforeRefueling,
-            afterRefueling,
-            capacityFull
-        } = item
-
-        return {
-            fuelGrade,
-            capacity,
-            price,
-            beforeRefueling,
-            afterRefueling,
-            capacityFull
-        }
-    }
 
     async create(
         interactionId: string,
@@ -42,7 +22,7 @@ export class FuelInteractionService {
             data: { ...allowedFields, interactionId }
         })
 
-        return this.removeUnusedProps(item)
+        return transformFuelData(item)
     }
 
     async findOne(id: string): Promise<FuelInteractionDto> {
@@ -52,7 +32,7 @@ export class FuelInteractionService {
 
         const validatedItem = validateExists(item, ENTITY, id)
 
-        return this.removeUnusedProps(validatedItem)
+        return transformFuelData(validatedItem)
     }
 
     async update(
@@ -66,6 +46,6 @@ export class FuelInteractionService {
             data: allowedFieldsDto(updateFuelInteractionDto, ENTITY)
         })
 
-        return this.removeUnusedProps(item)
+        return transformFuelData(item)
     }
 }

@@ -15,8 +15,8 @@ model Interaction {
     user   User   @relation(fields: [userId], references: [id], onUpdate: NoAction, onDelete: Cascade)
     userId String @map("user_id")
 
-    fuelInteractions   FuelInteraction[]
-    wheelInteractions  WheelInteraction[]
+    fuelInteraction    FuelInteraction?
+    wheelInteraction   WheelInteraction?
     repairInteractions RepairOnInteraction[]
     partInteractions   PartOnInteraction[]
 
