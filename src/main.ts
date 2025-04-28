@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import morgan from 'morgan'
+import { IncomingMessage, ServerResponse } from 'node:http'
 import process from 'node:process'
 import { AppModule } from './app.module'
 import { TelegramGuard } from './auth/guards/telegram.guard'
@@ -21,7 +22,10 @@ async function bootstrap() {
                 ? '[:time] :method :url :status :res[content-length] - :response-time ms'
                 : 'combined',
             {
-                skip: (_, res) => !isDev && res.statusCode < 400
+                skip: (
+                    _: IncomingMessage,
+                    res: ServerResponse<IncomingMessage>
+                ) => !isDev && res.statusCode < 400
             }
         )
     )
